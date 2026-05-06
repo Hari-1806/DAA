@@ -1,0 +1,110 @@
+//HORSPOOL ALGORITHM
+import java.util.*;
+
+public class Horspool {
+    // Helper to turn characters (a-z and _) into table indices
+    static int getIdx(char c) {
+        return (c == '_') ? 26 : Character.toLowerCase(c) - 'a';
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter the text: ");
+        String text = sc.nextLine();
+        System.out.print("Enter the pattern: ");
+        String pat = sc.nextLine();
+
+        int m = pat.length(), n = text.length();
+        int[] table = new int[27];
+
+        // 1. Build Shift Table
+        Arrays.fill(table, m);
+        for (int j = 0; j < m - 1; j++) {
+            table[getIdx(pat.charAt(j))] = m - 1 - j;
+        }
+
+        // Print Table
+        System.out.println("\n--- Shift Table ---");
+        for (int i = 0; i < 27; i++) {
+            char c = (i == 26) ? '_' : (char)('a' + i);
+            System.out.print(c + ":" + table[i] + " ");
+            if ((i + 1) % 9 == 0) System.out.println();
+        }
+
+        // 2. Search Logic
+        int i = m - 1, alignments = 0, comparisons = 0, foundIdx = -1;
+
+        while (i < n) {
+            // Print current alignment
+            System.out.println("\nAlignment " + (alignments + 1) + ":");
+            System.out.println(text);
+            for (int s = 0; s < (i - m + 1); s++) System.out.print(" ");
+            System.out.println(pat);
+
+            int k = 0;
+            while (k < m) {
+                comparisons++;
+                if (pat.charAt(m - 1 - k) == text.charAt(i - k)) k++;
+                else break;
+            }
+
+            if (k == m) {
+                foundIdx = i - m + 1;
+                break;
+            } else {
+                i += table[getIdx(text.charAt(i))];
+                alignments++;
+            }
+        }
+
+        // 3. Print Results
+        System.out.println("\n--- Final Results ---");
+        if (foundIdx == -1) {
+            System.out.println("No match found");
+        } else {
+            System.out.println("Pattern found at index: " + foundIdx);
+            System.out.println("No. of alignments: " + (alignments + 1));
+            System.out.println("No. of comparisons: " + comparisons);
+        }
+    }
+}
+//COUNTING SORT
+import java.util.*;
+
+public class RankCountingSort {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter the number of elements: ");
+        int n = sc.nextInt();
+
+        int[] arr = new int[n];
+        int[] ranks = new int[n];
+        int[] output = new int[n];
+
+        System.out.println("Enter " + n + " integers:");
+        for (int i = 0; i < n; i++) arr[i] = sc.nextInt();
+
+        System.out.println("\nOriginal Array: " + Arrays.toString(arr));
+        System.out.println("\n--- Calculating Ranks ---");
+
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (arr[i] < arr[j]) {
+                    ranks[j]++;
+                } else {
+                    ranks[i]++;
+                }
+            }
+            System.out.println("Pass " + (i + 1) + ": " + Arrays.toString(ranks));
+        }
+
+        for (int i = 0; i < n; i++) {
+            output[ranks[i]] = arr[i];
+        }
+
+        System.out.println("\nSorted Array: " + Arrays.toString(output));
+        sc.close();
+    }
+}
+
