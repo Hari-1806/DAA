@@ -1,0 +1,51 @@
+//FLOYDS ALGORITHUM
+import java.util.Scanner;
+
+public class Floyds {
+    static final int INF = 999;
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of vertices: ");
+        int n = sc.nextInt();
+
+        int[][] dist = new int[n][n];
+        System.out.println("Enter the adjacency matrix:");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                dist[i][j] = sc.nextInt();
+            }
+        }
+
+        printMatrix(dist, 0);
+
+        for (int k = 0; k < n; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (dist[i][k] + dist[k][j] < dist[i][j]) {
+                        dist[i][j] = dist[i][k] + dist[k][j];
+                    }
+                }
+            }
+            printMatrix(dist, k + 1);
+        }
+
+        sc.close();
+    }
+
+    static void printMatrix(int[][] matrix, int step) {
+        System.out.println("\nD" + step + ":");
+        for (int[] row : matrix) {
+            for (int val : row) {
+                if (val >= INF) {
+                    System.out.print("INF\t");
+                } else {
+                    System.out.print(val + "\t");
+                }
+            }
+            System.out.println();
+        }
+    }
+}
+
